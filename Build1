@@ -1,0 +1,156 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace TaxiKosten1
+{
+    public partial class Form1 : Form
+    {
+        public Form1()
+        {
+            InitializeComponent();
+        }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+
+        double prijstotaal1;
+        double prijstotaal2;
+        double prijstotaal3;
+        
+        double ritminuten;
+        double starttijd;
+        double eindtijd;
+        string dag;
+        bool weekendtoeslag1 = false;
+
+        bool weekendtoeslag2 = false;
+
+        bool weekendtoeslag3 = false;
+
+        private void EuroperKilometer()
+        {
+            try
+            {
+                prijstotaal1 = (Convert.ToDouble(textBox1.Text) * 1);
+            }
+            catch { }
+                
+            
+        }
+
+        private void ExtraTarief()
+        {
+            try
+            {
+                ritminuten = Convert.ToInt32(textBox3.Text);
+                textBox8.Text = textBox8.Text.Replace(":", ".");
+                textBox8.Text = textBox8.Text.Replace(",", ".");
+                starttijd = Convert.ToDouble(textBox8.Text);
+            }
+            catch { }
+
+
+            if (starttijd < 8 || starttijd > 18)
+            {
+                prijstotaal2 = prijstotaal1 + (ritminuten * 0.45);
+            }
+            else
+            {
+                prijstotaal2 = prijstotaal1 + (ritminuten * 0.25);
+            }
+
+            
+
+        }
+
+        private void ExtraTarief2()
+        {
+            ritminuten = Convert.ToDouble(textBox3.Text);
+            starttijd = Convert.ToDouble(textBox8.Text);
+
+            ritminuten = ritminuten / 100;
+
+            
+
+            for (double i = 0.01; i < ritminuten + 0.01; i+= 0.01)
+            {
+                eindtijd = starttijd + i;
+
+                if (eindtijd < 8 || eindtijd > 18)
+                {
+                    prijstotaal2 = prijstotaal1 + 0.45;
+                }
+                else
+                {
+                    prijstotaal2 = prijstotaal1 + 0.25;
+                }
+            }
+
+            
+
+        }
+
+        private void WeekendToeslag()
+        {
+
+            if (comboBox2.Text == "Zaterdag" || comboBox2.Text == "Zondag")
+            {
+                if (starttijd < 7 || starttijd > 22)
+                {
+                    weekendtoeslag1 = true;
+                }
+            }
+
+            if (comboBox2.Text == "Vrijdag")
+            {
+                if (starttijd > 22)
+                {
+                    weekendtoeslag2 = true;
+                }
+            }
+
+            if (comboBox2.Text == "Maandag")
+            {
+                if (starttijd < 7)
+                {
+                    weekendtoeslag3 = true;
+                }
+            }
+
+            if (weekendtoeslag1 == true || weekendtoeslag2 == true || weekendtoeslag3 == true)
+            {
+                prijstotaal3 = prijstotaal2 * 1.15;
+
+                prijstotaal3 = Math.Round(prijstotaal3, 2,MidpointRounding.ToEven);
+
+                textBox7.Text = prijstotaal3.ToString();
+            }
+            else
+            {
+                prijstotaal2 = Math.Round(prijstotaal2, 2, MidpointRounding.ToEven);
+                textBox7.Text = prijstotaal2.ToString();
+            }
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            EuroperKilometer();
+            ExtraTarief();
+            WeekendToeslag();
+
+            weekendtoeslag1 = false;
+            weekendtoeslag2 = false;
+            weekendtoeslag3 = false;
+        }
+    }
+}
